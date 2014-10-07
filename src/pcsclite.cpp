@@ -20,9 +20,9 @@ void PCSCLite::init(Handle<Object> target) {
     target->Set(NanNew("PCSCLite"), tpl->GetFunction());
 }
 
-PCSCLite::PCSCLite(): m_card_context(NULL),
+PCSCLite::PCSCLite(): m_card_context(0),
                       m_card_reader_state(),
-                      m_status_thread(NULL),
+                      m_status_thread(0),
                       m_state(0) {
 
     assert(uv_mutex_init(&m_mutex) == 0);
@@ -112,7 +112,7 @@ NAN_METHOD(PCSCLite::Close) {
     }
 
     assert(uv_thread_join(&obj->m_status_thread) == 0);
-    obj->m_status_thread = NULL;
+    obj->m_status_thread = 0;
 
     NanReturnValue(NanNew<Integer>(result));
 }
@@ -189,7 +189,7 @@ void PCSCLite::HandlerFunction(void* arg) {
             uv_mutex_unlock(&pcsclite->m_mutex);
         } else {
             /*  If PnP is not supported, just wait for 1 second */
-            sleep(1);
+            Sleep(1000);
         }
     }
 
